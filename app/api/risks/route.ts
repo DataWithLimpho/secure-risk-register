@@ -10,7 +10,10 @@ export async function GET() {
     console.error("Failed to fetch risks:", error);
 
     return NextResponse.json(
-      { error: "Failed to fetch risks" },
+      {
+        error: "Failed to fetch risks",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }
@@ -20,7 +23,9 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const score = body.likelihood * body.impact;
+    const likelihood = Number(body.likelihood);
+    const impact = Number(body.impact);
+    const score = likelihood * impact;
 
     const rating =
       score >= 17
@@ -36,8 +41,8 @@ export async function POST(request: Request) {
       title: body.title,
       category: body.category,
       owner: body.owner,
-      likelihood: body.likelihood,
-      impact: body.impact,
+      likelihood,
+      impact,
       score,
       rating,
       status: body.status ?? "Open",
@@ -48,7 +53,10 @@ export async function POST(request: Request) {
     console.error("Failed to create risk:", error);
 
     return NextResponse.json(
-      { error: "Failed to create risk" },
+      {
+        error: "Failed to create risk",
+        details: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 }
     );
   }

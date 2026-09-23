@@ -63,9 +63,9 @@ export default function Home() {
       try {
         const response = await fetch("/api/risks");
 
-        if (!response.ok) {
-          throw new Error("Failed to load risks");
-        }
+      if (!response.ok) {
+  throw new Error("Failed to load risks");
+}
 
         const data = await response.json();
 
@@ -101,6 +101,38 @@ export default function Home() {
 
     loadRisks();
   }, []);
+
+  async function handleDeleteRisk(risk: Risk) {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${risk.title}"?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/risks/${risk.id}`, {
+        method: "DELETE",
+      });
+
+    if (!response.ok) {
+  const errorData = await response.json();
+
+  console.error("Delete API error:", errorData);
+
+  throw new Error(
+    errorData.details || errorData.error || "Failed to delete risk"
+  );
+}
+
+      setRisks((currentRisks) =>
+        currentRisks.filter((currentRisk) => currentRisk.id !== risk.id)
+      );
+    } catch (error) {
+      console.error("Failed to delete risk:", error);
+    }
+  }
 
   const totalRisks = risks.length;
 
@@ -401,13 +433,23 @@ export default function Home() {
                         </td>
 
                         <td className="px-6 py-5">
-                          <button
-                            type="button"
-                            onClick={() => setEditingRisk(risk)}
-                            className="font-medium text-indigo-600 transition hover:text-indigo-800"
-                          >
-                            Edit
-                          </button>
+                          <div className="flex items-center gap-3">
+                            <button
+                              type="button"
+                              onClick={() => setEditingRisk(risk)}
+                              className="font-medium text-indigo-600 transition hover:text-indigo-800"
+                            >
+                              Edit
+                            </button>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteRisk(risk)}
+                              className="font-medium text-red-600 transition hover:text-red-800"
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -673,7 +715,6 @@ function AddRiskModal({
       console.warn("API create failed, falling back to local state:", error);
     }
 
-    // Fallback for local testing if API isn't ready
     onAdd({
       id: `RSK-${String(Date.now()).slice(-4)}`,
       title: title.trim(),
@@ -896,7 +937,6 @@ function EditRiskModal({
       console.warn("API update failed, applying local update fallback:", error);
     }
 
-    // Always succeed locally even if backend endpoint is missing or fails
     onUpdate(updatedData);
   }
 
