@@ -1,0 +1,16 @@
+// use prisma-8
+
+model Risk {
+  id          Int      @id @default(autoincrement())
+  riskId      String   @unique
+  title       String
+  category    String
+  owner       String
+  likelihood  Int
+  impact      Int
+  score       Int
+  rating      String
+  status      String   @default("Open")
+  createdAt   TimestamptzString @default(now())
+  updatedAt   temporal.updatedAtString()
+}

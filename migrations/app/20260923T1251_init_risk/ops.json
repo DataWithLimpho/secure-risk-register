@@ -1,0 +1,100 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.risk",
+    "label": "Create table \"risk\"",
+    "summary": "Creates table \"risk\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "risk"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"risk\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"risk\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"risk\"",
+        "sql": "CREATE TABLE \"public\".\"risk\" (\n  \"category\" text NOT NULL,\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"id\" SERIAL NOT NULL,\n  \"impact\" int4 NOT NULL,\n  \"likelihood\" int4 NOT NULL,\n  \"owner\" text NOT NULL,\n  \"rating\" text NOT NULL,\n  \"riskId\" text NOT NULL,\n  \"score\" int4 NOT NULL,\n  \"status\" text DEFAULT 'Open' NOT NULL,\n  \"title\" text NOT NULL,\n  \"updatedAt\" timestamptz NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"risk\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"risk\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.risk.risk_riskId_key",
+    "label": "Add unique constraint on \"risk\" (riskId)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "risk_riskId_key",
+        "table": "risk"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"risk_riskId_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "risk_riskId_key",
+          "public",
+          "\"public\".\"risk\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"risk_riskId_key\"",
+        "sql": "ALTER TABLE \"public\".\"risk\" ADD CONSTRAINT \"risk_riskId_key\" UNIQUE (\"riskId\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"risk_riskId_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "risk_riskId_key",
+          "public",
+          "\"public\".\"risk\""
+        ]
+      }
+    ]
+  }
+]
