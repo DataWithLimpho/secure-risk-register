@@ -2,55 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-const initialRisks = [
-  {
-    id: "RSK-001",
-    title: "Unauthorised access to customer data",
-    category: "Cybersecurity",
-    owner: "Security Team",
-    likelihood: 4,
-    impact: 5,
-    score: 20,
-    rating: "Critical",
-    status: "Open",
-  },
-  {
-    id: "RSK-002",
-    title: "Cloud service disruption",
-    category: "Operational",
-    owner: "IT Operations",
-    likelihood: 3,
-    impact: 4,
-    score: 12,
-    rating: "High",
-    status: "Mitigating",
-  },
-  {
-    id: "RSK-003",
-    title: "Third-party data breach",
-    category: "Third Party",
-    owner: "Risk Team",
-    likelihood: 3,
-    impact: 5,
-    score: 15,
-    rating: "High",
-    status: "Open",
-  },
-  {
-    id: "RSK-004",
-    title: "Incomplete security training",
-    category: "People",
-    owner: "HR",
-    likelihood: 2,
-    impact: 3,
-    score: 6,
-    rating: "Medium",
-    status: "Monitoring",
-  },
-];
+const initialRisks: Risk[] = [];
 
 export default function Home() {
   const [risks, setRisks] = useState(initialRisks);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [showAddRisk, setShowAddRisk] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
@@ -58,49 +15,52 @@ export default function Home() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [editingRisk, setEditingRisk] = useState<Risk | null>(null);
 
-  useEffect(() => {
-    async function loadRisks() {
-      try {
-        const response = await fetch("/api/risks");
+ useEffect(() => {
+  async function loadRisks() {
+    try {
+      const response = await fetch("/api/risks");
 
       if (!response.ok) {
-  throw new Error("Failed to load risks");
-}
-
-        const data = await response.json();
-
-        const databaseRisks = data.map(
-          (risk: {
-            riskId: string;
-            title: string;
-            category: string;
-            owner: string;
-            likelihood: number;
-            impact: number;
-            score: number;
-            rating: string;
-            status: string;
-          }) => ({
-            id: risk.riskId,
-            title: risk.title,
-            category: risk.category,
-            owner: risk.owner,
-            likelihood: risk.likelihood,
-            impact: risk.impact,
-            score: risk.score,
-            rating: risk.rating,
-            status: risk.status,
-          })
-        );
-
-        setRisks(databaseRisks);
-      } catch (error) {
-        console.error("Failed to load risks:", error);
+        throw new Error("Failed to load risks");
       }
-    }
 
-    loadRisks();
-  }, []);
+      const data = await response.json();
+
+      const databaseRisks: Risk[] = data.map(
+        (risk: {
+          riskId: string;
+          title: string;
+          category: string;
+          owner: string;
+          likelihood: number;
+          impact: number;
+          score: number;
+          rating: Risk["rating"];
+          status: string;
+        }) => ({
+          id: risk.riskId,
+          title: risk.title,
+          category: risk.category,
+          owner: risk.owner,
+          likelihood: risk.likelihood,
+          impact: risk.impact,
+          score: risk.score,
+          rating: risk.rating,
+          status: risk.status,
+        })
+      );
+
+      setRisks(databaseRisks);
+  } catch (error) {
+  console.error("Failed to load risks:", error);
+  setLoadError("Unable to load risks. Please try again.");
+} finally {
+  setIsLoading(false);
+}
+  }
+
+  loadRisks();
+}, []);
 
   async function handleDeleteRisk(risk: Risk) {
     const confirmed = window.confirm(
@@ -112,6 +72,7 @@ export default function Home() {
     }
 
     try {
+      setLoadError(null);
       const response = await fetch(`/api/risks/${risk.id}`, {
         method: "DELETE",
       });
@@ -393,7 +354,41 @@ export default function Home() {
                   </thead>
 
                   <tbody className="divide-y divide-slate-100">
-                    {filteredRisks.map((risk) => (
+                    {isLoading && (
+  <tr>
+    <td
+      colSpan={9}
+      className="px-6 py-12 text-center text-sm text-slate-500"
+    >
+      Loading risks...
+    </td>
+  </tr>
+)}
+
+{!isLoading && loadError && (
+  <tr>
+    <td
+      colSpan={9}
+      className="px-6 py-12 text-center text-sm text-red-600"
+    >
+      {loadError}
+    </td>
+  </tr>
+)}
+
+{!isLoading && !loadError && filteredRisks.length === 0 && (
+  <tr>
+    <td
+      colSpan={9}
+      className="px-6 py-12 text-center text-sm text-slate-500"
+    >
+      No risks found. Add your first risk to get started.
+    </td>
+  </tr>
+)}
+
+                    {!isLoading &&
+  filteredRisks.map((risk) => (
                       <tr
                         key={risk.id}
                         className="transition hover:bg-slate-50"
