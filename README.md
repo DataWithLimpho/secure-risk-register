@@ -4,6 +4,10 @@ A full-stack risk management application for identifying, assessing, tracking, a
 
 Built with **Next.js, TypeScript, PostgreSQL, Prisma, and Tailwind CSS**.
 
+## Dashboard
+
+![RiskFlow dashboard](public/screenshots/riskflow-dashboard.png)
+
 ## Overview
 
 Secure Risk Register provides a central dashboard for managing organisational risks. Users can create, edit, search, filter, and delete risks while the application automatically calculates risk scores and assigns severity ratings based on likelihood and impact.

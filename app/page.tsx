@@ -167,15 +167,7 @@ export default function Home() {
             <NavItem label="Settings" />
           </nav>
 
-          <div className="mx-4 mt-8 rounded-xl bg-indigo-50 p-4">
-            <p className="text-sm font-medium text-indigo-900">
-              Portfolio Project
-            </p>
-            <p className="mt-1 text-xs leading-5 text-indigo-600">
-              Full-stack risk management application built with Next.js.
-            </p>
-          </div>
-        </aside>
+     </aside>
 
         {/* Main content */}
         <div className="flex-1">
