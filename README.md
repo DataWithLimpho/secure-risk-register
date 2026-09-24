@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Secure Risk Register
 
-## Getting Started
+A full-stack risk management application for identifying, assessing, tracking, and managing organisational risks.
 
-First, run the development server:
+Built with **Next.js, TypeScript, PostgreSQL, Prisma, and Tailwind CSS**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Secure Risk Register provides a central dashboard for managing organisational risks. Users can create, edit, search, filter, and delete risks while the application automatically calculates risk scores and assigns severity ratings based on likelihood and impact.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The project demonstrates full-stack application development, API design, database persistence, data modelling, and production-style UI patterns.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- Create, view, edit, and delete risks
+- PostgreSQL-backed persistent storage
+- Automatic risk scoring based on likelihood × impact
+- Critical, High, Medium, and Low risk classification
+- Dynamic dashboard metrics
+- Risk exposure overview
+- Search risks by title, ID, category, owner, or status
+- Filter by risk rating and status
+- Loading, empty, and error states
+- Responsive SaaS-style dashboard
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Frontend:** Next.js 16, React, TypeScript
+- **Styling:** Tailwind CSS
+- **Backend:** Next.js API Routes
+- **Database:** PostgreSQL
+- **Database Layer:** Prisma
+- **Deployment:** Vercel (coming soon)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Architecture
 
-## Deploy on Vercel
+Frontend Dashboard  
+↓  
+Next.js API Routes  
+↓  
+Prisma  
+↓  
+PostgreSQL
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Risk Scoring
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Risk scores are calculated automatically:
+
+`Risk Score = Likelihood × Impact`
+
+The application then assigns a rating:
+
+| Score | Rating |
+|------:|--------|
+| 17–25 | Critical |
+| 10–16 | High |
+| 5–9 | Medium |
+| 1–4 | Low |
+
+## Project Status
+
+Core risk management functionality is complete, including persistent CRUD operations, automatic scoring, dashboard metrics, search, filtering, and application states.
+
+Additional UI polish and deployment are in progress.
