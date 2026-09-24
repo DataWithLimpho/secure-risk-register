@@ -4,6 +4,10 @@ A full-stack risk management application for identifying, assessing, tracking, a
 
 Built with **Next.js, TypeScript, PostgreSQL, Prisma, and Tailwind CSS**.
 
+## Live Demo
+
+[View the live application](https://secure-risk-register-qjnx.vercel.app/)
+
 ## Dashboard
 
 ![RiskFlow dashboard](public/screenshots/riskflow-dashboard.png)
