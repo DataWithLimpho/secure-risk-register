@@ -27,6 +27,17 @@ The project demonstrates full-stack application development, API design, databas
 - Loading, empty, and error states
 - Responsive SaaS-style dashboard
 
+## Engineering Highlights
+
+- Designed a PostgreSQL data model for persistent risk management
+- Built API routes for complete CRUD operations
+- Implemented server-side risk score and severity calculation
+- Connected the Next.js frontend to persistent database storage
+- Added dynamic dashboard metrics derived from live risk data
+- Implemented search and multi-criteria filtering
+- Added loading, empty, and error states for resilient data fetching
+- Structured the application with typed TypeScript models and reusable components
+
 ## Tech Stack
 
 - **Frontend:** Next.js 16, React, TypeScript
